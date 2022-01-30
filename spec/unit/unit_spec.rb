@@ -3,7 +3,12 @@ require 'rails_helper'
 
 RSpec.describe Book, type: :model do
   subject do
-    described_class.new(title: 'harry potter')
+    described_class.new(
+      title: 'harry potter',
+      author: 'j.k. rowling',
+      price: 50,
+      publish_date: "2017-01-29"
+    )
   end
 
   it 'is valid with valid attributes' do
@@ -12,48 +17,9 @@ RSpec.describe Book, type: :model do
 
   it 'is not valid without a name' do
     subject.title = nil
+    subject.author = nil
+    subject.price = nil
+    subject.publish_date = nil
     expect(subject).not_to be_valid
-  end
-end
-
-
-RSpec.describe Author, type: :model do
-  author = Author.new(title: 'j.k. rowling')
-
-  it 'is valid with valid attributes' do
-    expect(author).to be_valid
-  end
-
-  it 'is not valid without a name' do
-    author.title = nil
-    expect(author).not_to be_valid
-  end
-end
-
-
-RSpec.describe Price, type: :model do
-  price = Price.new(price: 50)
-
-  it 'is valid with valid attributes' do
-    expect(price).to be_valid
-  end
-
-  it 'is not valid when nil' do
-    price.price = nil
-    expect(price).not_to be_valid
-  end
-end
-
-
-RSpec.describe Date, type: :model do
-  date = Date.new(date: Time.new)
-
-  it 'is valid with valid attributes' do
-    expect(date).to be_valid
-  end
-
-  it 'is not valid when nil' do
-    date.date = nil
-    expect(date).not_to be_valid
   end
 end
