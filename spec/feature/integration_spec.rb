@@ -165,7 +165,7 @@ RSpec.describe 'Creating a book -- ', type: :feature do
     select '29', :from => 'book_publish_date_3i'
 
     click_on 'commit'
-    expect(page).to have_content("Price can't be negative")
+    expect(page).to have_content("Price must be greater than or equal to 0")
 
     visit books_path
 
