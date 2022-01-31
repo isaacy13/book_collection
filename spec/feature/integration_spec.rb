@@ -1,50 +1,175 @@
 # location: spec/feature/integration_spec.rb
 require 'rails_helper'
 
-RSpec.describe 'Creating a book', type: :feature do
+RSpec.describe 'Creating a book -- ', type: :feature do
   scenario 'valid inputs' do
     visit new_book_path
     fill_in 'Title', with: 'harry potter'
-    click_on 'Create Book'
+    fill_in 'Author', with: 'j.k. rowling'
+    fill_in 'Price', with: 50
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
     visit books_path
+
+    expect(page).to have_content('harry potter')
+    expect(page).to have_content('j.k. rowling')
+    expect(page).to have_content(50)
+    expect(page).to have_content("2017-01-29")
+  end
+
+  scenario 'blank title' do
+    visit new_book_path
+    fill_in 'Author', with: 'j.k. rowling'
+    fill_in 'Price', with: 50
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
+
+    expect(page).to have_content("Title can't be blank")
+  end
+
+  scenario 'front trailing whitespace title' do
+    visit new_book_path
+    fill_in 'Title', with: '      harry potter'
+    fill_in 'Author', with: 'j.k. rowling'
+    fill_in 'Price', with: 50
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
+    visit books_path
+
+    expect(page).not_to have_content('      harry potter')
     expect(page).to have_content('harry potter')
   end
-end
 
+  scenario 'back trailing whitespace tutke' do
+    visit new_book_path
+    fill_in 'Title', with: 'harry potter      '
+    fill_in 'Author', with: 'j.k. rowling'
+    fill_in 'Price', with: 50
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
 
-RSpec.describe 'Creating an author', type: :feature do
-  scenario 'valid inputs' do
-    visit new_author_path
-    fill_in 'Title', with: 'j.k. rowling'
-    click_on 'Create Author'
-    visit authors_path
+    click_on 'commit'
+    visit books_path
+
+    expect(page).not_to have_content('harry potter      ')
+    expect(page).to have_content('harry potter')
+  end
+
+  scenario 'trailing whitespace title' do
+    visit new_book_path
+    fill_in 'Title', with: '      harry potter      '
+    fill_in 'Author', with: 'j.k. rowling'
+    fill_in 'Price', with: 50
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
+    visit books_path
+
+    expect(page).not_to have_content('      harry potter      ')
+    expect(page).to have_content('harry potter')
+  end
+
+  scenario 'blank author' do
+    visit new_book_path
+    fill_in 'Title', with: 'harry potter'
+    fill_in 'Price', with: 50
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
+
+    expect(page).to have_content("Author can't be blank")
+  end
+
+  scenario 'front trailing whitespace author' do
+    visit new_book_path
+    fill_in 'Title', with: 'harry potter'
+    fill_in 'Author', with: '      j.k. rowling'
+    fill_in 'Price', with: 50
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
+    visit books_path
+
+    expect(page).not_to have_content('      j.k. rowling')
     expect(page).to have_content('j.k. rowling')
   end
-end
 
-
-RSpec.describe 'Creating a price', type: :feature do
-  scenario 'valid inputs' do
-    visit new_price_path
+  scenario 'back trailing whitespace author' do
+    visit new_book_path
+    fill_in 'Title', with: 'harry potter'
+    fill_in 'Author', with: 'j.k. rowling      '
     fill_in 'Price', with: 50
-    click_on 'Create Price'
-    visit prices_path
-    expect(page).to have_content(50)
-  end
-end
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
 
-RSpec.describe 'Creating a PublishDate', type: :feature do
-  time = "2017-01-29 21:14:00"
+    click_on 'commit'
+    visit books_path
 
-  scenario 'valid inputs' do
-    visit new_publish_date_path
-    select '2017', :from => 'publish_date_publish_date_1i'
-    select 'January', :from => 'publish_date_publish_date_2i'
-    select '29', :from => 'publish_date_publish_date_3i'
-    select '21', :from => 'publish_date_publish_date_4i'
-    select '14', :from => 'publish_date_publish_date_5i'
-    click_on 'Create Publish date'
-    visit publish_dates_path
-    expect(page).to have_content(time)
+    expect(page).not_to have_content('j.k. rowling      ')
+    expect(page).to have_content('j.k. rowling')
   end
+
+  scenario 'trailing whitespace author' do
+    visit new_book_path
+    fill_in 'Title', with: 'harry potter'
+    fill_in 'Author', with: '      j.k. rowling      '
+    fill_in 'Price', with: 50
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
+    visit books_path
+
+    expect(page).not_to have_content('      j.k. rowling      ')
+    expect(page).to have_content('j.k. rowling')
+  end
+
+  scenario 'blank price' do
+    visit new_book_path
+    fill_in 'Title', with: 'harry potter'
+    fill_in 'Author', with: 'j.k. rowling'
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
+
+    expect(page).to have_content("Price can't be blank")
+  end
+
+  scenario 'negative price' do
+    visit new_book_path
+    fill_in 'Title', with: 'harry potter'
+    fill_in 'Author', with: 'j.k. rowling'
+    fill_in 'Price', with: -5
+    select '2017', :from => 'book_publish_date_1i'
+    select 'January', :from => 'book_publish_date_2i'
+    select '29', :from => 'book_publish_date_3i'
+
+    click_on 'commit'
+    expect(page).to have_content("Price must be greater than or equal to 0")
+
+    visit books_path
+
+    expect(page).not_to have_content(-5)
+  end
+
 end

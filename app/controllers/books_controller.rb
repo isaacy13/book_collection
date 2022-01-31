@@ -47,12 +47,17 @@ class BooksController < ApplicationController
     end
   end
 
-  # DELETE /books/1 or /books/1.json
+  # DELETE /books/1/delete
+  def delete
+    @book = Book.find(params[:id])
+  end
+
+  # DESTROY /books/1 or /books/1.json
   def destroy
     @book.destroy
 
     respond_to do |format|
-      format.html { redirect_to books_url, notice: "Book was successfully destroyed." }
+      format.html { redirect_to books_url, notice: "Book was successfully deleted." }
       format.json { head :no_content }
     end
   end
