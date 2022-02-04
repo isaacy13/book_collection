@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :users
   resources :books do
     get :delete, on: :member # directs /books/id/delete to controller
   end
